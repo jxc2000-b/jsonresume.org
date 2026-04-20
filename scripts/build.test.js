@@ -11,22 +11,36 @@ const ROOT = resolve(__dirname, '..');
 const OUT = resolve(ROOT, 'out');
 mkdirSync(OUT, { recursive: true });
 
-const resume = JSON.parse(
-  readFileSync(resolve(__dirname, 'sample-resume.json'), 'utf8')
-);
+const RESUME_PATH = process.env.RESUME
+  ? resolve(ROOT, process.env.RESUME)
+  : resolve(__dirname, 'sample-resume.json');
+const resume = JSON.parse(readFileSync(RESUME_PATH, 'utf8'));
 
-const THEME = process.env.THEME || 'elegant';
+// Diverse set of themes to render. Override via THEMES="a,b,c" to customize.
+const DEFAULT_THEMES = [
+  'elegant',
+  'even',
+  'jacrys',
+  'kendall',
+  'macchiato',
+  'stackoverflow',
+];
+
+const THEMES = (process.env.THEMES
+  ? process.env.THEMES.split(',').map((s) => s.trim())
+  : DEFAULT_THEMES
+).filter(Boolean);
 
 describe('build (pdf pathways)', () => {
-  it(`path 1: chromium → ${THEME}.pdf`, async () => {
+  it.each(THEMES)('path 1: chromium → %s.pdf', async (theme) => {
     const { content } = await pdf.format(resume, {
-      theme: THEME,
+      theme,
       username: 'local',
     });
-    const file = resolve(OUT, `${THEME}.pdf`);
+    const file = resolve(OUT, `${theme}.pdf`);
     writeFileSync(file, content);
     // eslint-disable-next-line no-console
-    console.log(`\n  wrote ${file} (${content.length} bytes)`);
+    console.log(`  wrote ${file} (${content.length} bytes)`);
     expect(content).toBeInstanceOf(Buffer);
     expect(content.length).toBeGreaterThan(1000);
   }, 60_000);
@@ -36,7 +50,7 @@ describe('build (pdf pathways)', () => {
     const yamlFile = resolve(OUT, 'resume.rendercv.yaml');
     writeFileSync(yamlFile, content);
     // eslint-disable-next-line no-console
-    console.log(`\n  wrote ${yamlFile} (${content.length} bytes)`);
+    console.log(`  wrote ${yamlFile} (${content.length} bytes)`);
     expect(content).toContain('cv:');
 
     const cli = spawnSync(
@@ -47,16 +61,15 @@ describe('build (pdf pathways)', () => {
     if (cli.error && cli.error.code === 'ENOENT') {
       // eslint-disable-next-line no-console
       console.log(
-        '\n  [skip] `rendercv` CLI not found. Install it with:\n' +
-          '      pip install rendercv\n' +
-          '  Then rerun to produce a PDF from the YAML above.'
+        '  [skip] `rendercv` CLI not found. Install it with:\n' +
+          '      pip install rendercv'
       );
       return;
     }
     if (cli.status !== 0) {
       // eslint-disable-next-line no-console
       console.warn(
-        `\n  rendercv exited with ${cli.status}; YAML still available at ${yamlFile}`
+        `  rendercv exited with ${cli.status}; YAML still available at ${yamlFile}`
       );
     }
   }, 120_000);
