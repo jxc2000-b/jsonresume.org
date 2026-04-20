@@ -56,3 +56,6 @@ storybook-static
 .docwright/parse-cache/
 .docwright/heal-queue.json
 apps/docs/.source/
+
+# ts cache
+node_modules/.cache/tsbuildinfo
