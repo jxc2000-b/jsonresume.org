@@ -67,10 +67,10 @@ export default function WelcomePage() {
         <Bullets
           items={[
             'This is a resume workspace. You maintain one long master resume here, then spin off tailored versions of it for specific jobs.',
-            'The app never modifies your master — each version is a separate document derived from it.',
+            'The app never modifies your master, each version is a separate document derived from it.',
             'When you’re ready, the version compiles into a PDF that looks exactly like the preview you’ve been editing.',
-            'Everything is JSON Resume schema, so your data stays portable.',
-            'Export, move providers, or throw the whole thing at a different tool — nothing is locked in.',
+            'Everything is JSON Resume schema (popular standard for resumes), so your data stays portable.',
+            'Export, move providers, or throw the whole thing at a different tool, nothing is locked in.',
           ]}
         />
 
@@ -82,7 +82,7 @@ export default function WelcomePage() {
             'Upload your previous workspace or create and fill in your basics: name, contact, a short summary.',
             'Add your full work history, education, skills, projects. Don’t self-edit — put everything in. The master is supposed to be long.',
             'Click New Version, give it a name (e.g. “Acme — Senior Backend”), and start removing or reordering sections for that specific application.',
-            'Preview updates live in the viewer to your right. When the layout looks right, Download as PDF.',
+            'Preview updates live in the viewer some pages below. When the layout looks right, Download as PDF.',
           ]}
         />
       </Section>
@@ -99,12 +99,12 @@ export default function WelcomePage() {
         </p>
         <Bullets
           items={[
-            'Master + versions. One source of truth, unlimited derived resumes. Versions remember which sections they include; editing the master propagates into them where it makes sense.',
+            'Master + versions. One source of truth, unlimited derived resumes. Versions remember which sections they include and their targets; editing the master propagates into them where it makes sense.',
             'Live PDF-accurate preview. What you see in the viewer is the PDF. No separate render step, no surprises at download time.',
-            'Rule-based filtering. Mark sections with tags (e.g. “backend”, “leadership”) and build a version with a one-line rule like “only sections tagged backend”. Good for quickly producing a first-draft version.',
-            'Theme switching. Swap themes without changing your data. Every version can use a different theme if you want.',
-            'ATS hints. Inline checks flag things applicant tracking systems commonly mishandle — missing contact fields, unusual date formats, empty sections — before you submit.',
-            'Local-first. Your resume lives on your machine. Sync is opt-in.',
+            'Rule-based filtering. Eventually you will be able to programmtically version your resume, better than AI slop generated bullets, Pangram can detect those .',
+            'Theme switching. Swap themes without changing your data actually youre probs gonna need to change some data to swap themes.',
+            'ATS hints validation. Found some ATS validation code in json resume so fuck it why not',
+            'Local-first, no perma store, download your master document in json format',
           ]}
         />
       </Section>
@@ -121,8 +121,7 @@ export default function WelcomePage() {
         </p>
         <p>
           <span className="font-semibold">AI Based Builder:</span> coming soon, Docker,
-          TravisCI, Google Cloud Platform, VS Code, Visual Studio, PyCharm,
-          IntelliJ, Eclipse
+          TravisCI, Google Cloud Platform, VS Code, Visual Studio
         </p>
         <p>
           <span className="font-semibold">Version Viewer:</span> coming soon, NumPy,
