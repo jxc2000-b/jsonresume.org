@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --chrome: #3c3c3c; /*bg color of toolbar */
+  --bg: #282828; /* main viewport background */
+  --page: #ffffff; /* page sheets */
+  --fg: #fafafa; /* foreground text */
+  --selected: #99bafc; /* active thumbnail outline */
+  --other-bg: #28292A; /*background color of sidebar */
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+    Helvetica, Arial, sans-serif;
+}
+
+/* `.resume-form` is the style hook for schema-driven blocks (rjsf).
+   Intentionally empty for now — elements render with browser defaults
+   (plus Tailwind preflight). Add rules here when the visual design for
+   the form blocks lands. */

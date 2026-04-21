@@ -1,0 +1,103 @@
+{
+  "$schema": "https://jsonresume.local/workspace/v1",
+  "version": 1,
+  "createdAt": "2026-04-20T00:00:00.000Z",
+  "updatedAt": "2026-04-20T00:00:00.000Z",
+  "master": {
+    "basics": {
+      "name": "Ada Lovelace",
+      "label": "Software Engineer",
+      "email": "ada@example.com",
+      "phone": "+1 555 0100",
+      "url": "https://example.com",
+      "summary": "Engineer with a background in mathematics and an interest in analytical engines. Comfortable across the stack; enjoys writing notes on algorithms.",
+      "location": {
+        "address": "",
+        "city": "London",
+        "region": "",
+        "countryCode": "GB",
+        "postalCode": ""
+      },
+      "profiles": [
+        {
+          "network": "GitHub",
+          "username": "adalovelace",
+          "url": "https://github.com/adalovelace"
+        }
+      ]
+    },
+    "work": [
+      {
+        "name": "Analytical Engines Ltd",
+        "position": "Principal Engineer",
+        "url": "https://example.com/aengines",
+        "startDate": "2023-02-01",
+        "endDate": "",
+        "summary": "Leads the design of programmable machinery and their instruction sets.",
+        "highlights": [
+          "Designed the note G algorithm implementation in production.",
+          "Mentored three junior engineers through their first machine programs.",
+          "Migrated build system to a deterministic pipeline, halving CI time."
+        ]
+      },
+      {
+        "name": "Difference Works",
+        "position": "Senior Engineer",
+        "url": "",
+        "startDate": "2020-06-01",
+        "endDate": "2023-01-31",
+        "summary": "Maintained finite-difference computation services.",
+        "highlights": [
+          "Reduced calculation drift by rewriting the rounding core in TypeScript.",
+          "Shipped the first public SDK, adopted by two external teams."
+        ]
+      }
+    ],
+    "education": [
+      {
+        "institution": "University College London",
+        "area": "Mathematics",
+        "studyType": "B.Sc.",
+        "startDate": "2013-09-01",
+        "endDate": "2017-06-30"
+      }
+    ],
+    "skills": [
+      {
+        "name": "Languages",
+        "level": "Advanced",
+        "keywords": ["TypeScript", "Python", "Rust"]
+      },
+      {
+        "name": "Backend",
+        "level": "Advanced",
+        "keywords": ["Node.js", "PostgreSQL", "Redis"]
+      },
+      {
+        "name": "Frontend",
+        "level": "Proficient",
+        "keywords": ["React", "Vite", "Tailwind"]
+      }
+    ],
+    "projects": [
+      {
+        "name": "Note G",
+        "description": "An implementation of the first published algorithm.",
+        "url": "https://example.com/note-g",
+        "highlights": ["Open-sourced", "Featured in historical texts"],
+        "keywords": ["algorithms"]
+      }
+    ],
+    "awards": [],
+    "publications": [],
+    "languages": [
+      { "language": "English", "fluency": "Native" },
+      { "language": "French", "fluency": "Fluent" }
+    ],
+    "interests": [{ "name": "Poetical science" }],
+    "volunteer": [],
+    "certificates": [],
+    "references": []
+  },
+  "versions": []
+}
