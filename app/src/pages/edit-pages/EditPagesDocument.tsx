@@ -1,118 +1,174 @@
-import type { ReactNode } from 'react';
-import Form from '@rjsf/core';
-import validator from '@rjsf/validator-ajv8';
-import type { RJSFSchema } from '@rjsf/utils';
+import { useState, type ChangeEvent, type ReactNode } from 'react';
+import type { SectionId, UiSchema } from '../../types/uiSchema';
+import { getMasterSection } from '../../workspace/types';
+import { useWorkspace } from '../../workspace/WorkspaceContext';
+import { TextButton } from '@/components/TextButton';
 
 /**
  * The EDIT surface as a single continuous document, broken into
  * top-level BLOCKS. The `EditPagePaginator` treats each array entry as
  * atomic — it will never split one block across two pages, so keep
- * blocks granular (one work entry per block, not one whole Work
- * section) so the packer has enough breakpoints to balance pages.
+ * blocks granular (one entry per block when you have many) so the
+ * packer has enough breakpoints to balance pages.
  *
- * ## Why an array, not a component?
- *
- * Block-level pagination needs to introspect the top-level children
- * of the document. Exporting an array sidesteps all `React.Children`
- * / fragment / sub-component walking; the paginator just maps over
- * `editPageBlocks` directly.
- *
- * ## Future shape (rjsf)
- *
- * Each block will become an rjsf `<Form>` bound to the relevant
- * slice of the resume schema — one form per work entry, one per
- * education entry, etc. That change is isolated: swap the stub
- * elements in `editPageBlocks` with `<ResumeSectionForm ... />`
- * components; nothing else in App.tsx or the paginator needs to
- * change.
+ * Section order matches `app/schema/schema.json` / workspace `master` keys.
+ * `editPageBlocks` is built once at module load: each child calls
+ * `useWorkspace()` so data updates when the context reloads the fixture.
  */
 
 const DOC_FONT =
   '"Latin Modern Roman", "CMU Serif", "Computer Modern", Georgia, "Times New Roman", Times, serif';
 
-/* ── Entry schema / uiSchema ──────────────────────────────────────────
- * Placeholders for a single resume entry's JSON Schema + rjsf uiSchema.
- * These will eventually be DYNAMICALLY GENERATED — sliced out of
- * `lib/schema.js` per-section (work[], education[], skills[], …) —
- * so the concrete shape below is a stand-in to keep the form rendering
- * while the generator is being built. Keep the names generic
- * (`entrySchema` / `entryUiSchema`) so callers don't grow a dependency
- * on any particular section's shape.
- * ──────────────────────────────────────────────────────────────────── */
-
-const entrySchema: RJSFSchema = {
-  title: 'Work Experience',
-  type: 'object',
-  required: ['name', 'position'],
-  properties: {
-    name: { type: 'string', title: 'Company' },
-    position: { type: 'string', title: 'Position' },
-    url: { type: 'string', title: 'Website', format: 'uri' },
-    startDate: { type: 'string', title: 'Start date', format: 'date' },
-    endDate: { type: 'string', title: 'End date', format: 'date' },
-    summary: { type: 'string', title: 'Summary' },
-    highlights: {
-      type: 'array',
-      title: 'Highlights',
-      items: { type: 'string' },
-    },
-  },
-};
-
-const entryUiSchema = {
-  'ui:submitButtonOptions': { norender: true },
-  name: { 'ui:placeholder': 'e.g. Acme Corporation' },
-  position: { 'ui:placeholder': 'e.g. Senior Software Engineer' },
-  url: { 'ui:placeholder': 'https://acme.com' },
-  startDate: { 'ui:placeholder': 'YYYY-MM-DD' },
-  endDate: { 'ui:placeholder': 'YYYY-MM-DD (leave blank if current)' },
-  summary: {
-    'ui:widget': 'textarea',
-    'ui:options': { rows: 3 },
-    'ui:placeholder': 'Short summary of your role, scope, and team.',
-  },
-  highlights: {
-    items: {
-      'ui:placeholder': 'Accomplished X by doing Y, resulting in Z.',
-    },
-  },
-};
-
-// Hand-authored sections (DocHeader, Summary, Work, Education, Skills,
-// Projects) were removed so the page shows just the schema-driven form
-// for visual iteration. Re-add entries to this array when you want
-// them back.
-export const editPageBlocks: ReactNode[] = [
-  <ResumeSectionForm
-    key="form-w0"
-    schema={entrySchema}
-    uiSchema={entryUiSchema}
-  />,
+/** One row per edit “page” — static config; `ResumeSectionForm` pulls data/ui from context. */
+const EDIT_PAGE_SECTIONS: { key: string; sectionId: SectionId; title: string }[] = [
+  { key: 'form-basics', sectionId: 'basics', title: 'Basics' },
+  { key: 'form-work', sectionId: 'work', title: 'Work experience' },
+  { key: 'form-volunteer', sectionId: 'volunteer', title: 'Volunteer' },
+  { key: 'form-education', sectionId: 'education', title: 'Education' },
+  { key: 'form-awards', sectionId: 'awards', title: 'Awards' },
+  { key: 'form-certificates', sectionId: 'certificates', title: 'Certificates' },
+  { key: 'form-publications', sectionId: 'publications', title: 'Publications' },
+  { key: 'form-skills', sectionId: 'skills', title: 'Skills' },
+  { key: 'form-languages', sectionId: 'languages', title: 'Languages' },
+  { key: 'form-interests', sectionId: 'interests', title: 'Interests' },
+  { key: 'form-references', sectionId: 'references', title: 'References' },
+  { key: 'form-projects', sectionId: 'projects', title: 'Projects' },
 ];
 
-function ResumeSectionForm({
-  schema,
-  uiSchema,
-}: {
-  schema: RJSFSchema;
-  uiSchema?: Record<string, unknown>;
-}) {
+function EditDocumentHeader() {
+  const { commitStagedToMaster, hasStagedEdits } = useWorkspace();
   return (
-    // `resume-form` is a style hook consumed by `styles.css` — all the
-    // input/label/button styling lives there so rjsf's unkeyed inner
-    // DOM stays theme-able from one place.
+    <header
+      className="mb-1 flex w-full min-w-0 items-center justify-between gap-3 text-left"
+      style={{ fontFamily: DOC_FONT, color: 'black' }}
+    >
+      <h1 className="shrink-0 text-[22pt] font-bold tracking-tight">Edit Your Resume</h1>
+      <div
+        className="shrink-0 flex items-baseline justify-end gap-1 text-[10pt] text-inherit"
+        style={{ fontFamily: DOC_FONT, color: 'black' }}
+      >
+        <TextButton type="button" className="text-[10pt]">
+          <span className="underline decoration-black underline-offset-2">Preview</span>
+        </TextButton>
+        <span aria-hidden> / </span>
+        <TextButton
+          type="button"
+          className="text-[10pt]"
+          disabled={!hasStagedEdits}
+          onClick={() => commitStagedToMaster()}
+        >
+          <span className="underline decoration-black underline-offset-2">Save</span>
+        </TextButton>
+      </div>
+    </header>
+  );
+}
+
+// ── Paginator blocks: document header first, then section shells (workspace via hook) ─
+
+export const editPageBlocks: ReactNode[] = [
+  <EditDocumentHeader key="edit-doc-header" />,
+  ...EDIT_PAGE_SECTIONS.map((row) => (
+    <ResumeSectionForm
+      key={row.key}
+      sectionId={row.sectionId}
+      title={row.title}
+    />
+  )),
+];
+
+function SectionJsonEditor({ sectionId }: { sectionId: SectionId }) {
+  const { status, document, getSection, setSectionStaged, clearSectionStaged } = useWorkspace();
+  const [text, setText] = useState(() => {
+    const d = getSection(sectionId);
+    return d === undefined ? '' : JSON.stringify(d, null, 2);
+  });
+  const [parseErr, setParseErr] = useState<string | null>(null);
+
+  const onChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    const s = e.target.value;
+    setText(s);
+    if (s.trim() === '') {
+      clearSectionStaged(sectionId);
+      setParseErr(null);
+      if (status === 'ready' && document) {
+        const m = getMasterSection(document, sectionId);
+        setText(m === undefined ? '' : JSON.stringify(m, null, 2));
+      } else {
+        setText('');
+      }
+      return;
+    }
+    try {
+      setSectionStaged(sectionId, JSON.parse(s) as unknown);
+      setParseErr(null);
+    } catch {
+      setParseErr('Invalid JSON');
+    }
+  };
+
+  return (
+    <div>
+      <textarea
+        className="mt-2 box-border w-full min-h-40 resize-y rounded border border-neutral-200 bg-neutral-50 p-2 font-mono text-[9pt] leading-tight text-neutral-800"
+        spellCheck={false}
+        value={text}
+        onChange={onChange}
+        aria-label={`Edit JSON: ${sectionId}`}
+      />
+      {parseErr && (
+        <p className="mt-1 text-[9pt] text-red-600" role="status">
+          {parseErr}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function ResumeSectionForm({
+  sectionId,
+  title,
+}: {
+  sectionId: SectionId;
+  title: string;
+}) {
+  const { status, error, sectionUi, dataEpoch } = useWorkspace();
+  const sectionHelp = (sectionUi[sectionId] as UiSchema).sectionHelp;
+
+  if (status === 'loading') {
+    return (
+      <div
+        className="resume-form mt-3"
+        style={{ fontFamily: DOC_FONT, color: 'black' }}
+      >
+        <h2 className="text-[13pt] font-bold tracking-tight">{title}</h2>
+        <p className="mt-2 text-[11pt] text-neutral-500">Loading workspace…</p>
+      </div>
+    );
+  }
+
+  if (status === 'error') {
+    return (
+      <div
+        className="resume-form mt-3"
+        style={{ fontFamily: DOC_FONT, color: 'black' }}
+      >
+        <h2 className="text-[13pt] font-bold tracking-tight">{title}</h2>
+        <p className="mt-2 text-[11pt] text-red-600">{error ?? 'Error'}</p>
+      </div>
+    );
+  }
+
+  return (
     <div
       className="resume-form mt-3"
       style={{ fontFamily: DOC_FONT, color: 'black' }}
     >
-      <Form
-        schema={schema}
-        uiSchema={uiSchema}
-        validator={validator}
-        onChange={() => {
-          /* wired to nothing for now */
-        }}
-      />
+      <h2 className="text-[13pt] font-bold tracking-tight">{title}</h2>
+      {sectionHelp && (
+        <p className="mt-1 text-[9pt] text-neutral-500">{sectionHelp}</p>
+      )}
+      <SectionJsonEditor key={`${sectionId}-${dataEpoch}`} sectionId={sectionId} />
     </div>
   );
 }

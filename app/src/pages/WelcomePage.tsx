@@ -1,3 +1,6 @@
+import { TextButton } from '@/components/TextButton';
+import Hint from '../components/Hint';
+
 /**
  * Welcome page — rendered to look like a LaTeX-typeset resume for the
  * project itself ("Resume-Tree"). Follows the Jake's-Resume layout pattern
@@ -36,8 +39,8 @@ export default function WelcomePage() {
         <p className="mt-1 text-[11pt] ml-2.5px">‎ | ‎ </p>
         <p className="mt-1 text-[11pt] underline decoration-black underline-offset-2">opensource</p>
         <p className="mt-1 text-[11pt] ml-2.5px">‎ | ‎ </p>
-        <p className="mt-1 text-[11pt] underline decoration-black underline-offset-2">built with
-        jsonresume and rendercv</p>
+        <p className="mt-1 text-[11pt] underline decoration-black underline-offset-2">Built with jsonresume and rendercv.</p>
+           {/* <Hint content="JSON data format for résumés.">Built with jsonresume and rendercv.</Hint></p> */}
         </div>
         
       </header>
@@ -101,6 +104,16 @@ export default function WelcomePage() {
           items={[
             'Master + versions. One source of truth, unlimited derived resumes. Versions remember which sections they include and their targets; editing the master propagates into them where it makes sense.',
             'Live PDF-accurate preview. What you see in the viewer is the PDF. No separate render step, no surprises at download time.',
+          ]}
+        />
+        <p className="font-bold italic">
+        Dolor sit amet | Python, Flask, React, PostgreSQL, Docker{' '}
+          <span className="font-normal not-italic float-right">
+            June 2020 – Present
+          </span>
+        </p>
+        <Bullets
+          items={[
             'Rule-based filtering. Eventually you will be able to programmtically version your resume, better than AI slop generated bullets, Pangram can detect those .',
             'Theme switching. Swap themes without changing your data actually youre probs gonna need to change some data to swap themes.',
             'ATS hints validation. Found some ATS validation code in json resume so fuck it why not',
@@ -112,21 +125,25 @@ export default function WelcomePage() {
       {/* ── WHERE THIS IS GOING ────────────────────────────────────── */}
       <Section title="Tools">
         <p>
-          <span className="font-semibold">ATS Validator:</span> coming soon, Python, C/C++,
+        <TextButton type="button">
+          <span className="font-semibold">ATS Validator:</span>
+          </TextButton> &lt;-- clickable, coming soon, Python, C/C++,
           SQL (Postgres), JavaScript, HTML/CSS, R
         </p>
         <p>
-          <span className="font-semibold">Rules based Pruner:</span> coming soon, Node.js,
+        <TextButton type="button">
+          <span className="font-semibold">Rules based Pruner:</span>
+        </TextButton> coming soon, Node.js,
           Flask, JUnit, WordPress, Material-UI, FastAPI
         </p>
         <p>
-          <span className="font-semibold">AI Based Builder:</span> coming soon, Docker,
-          TravisCI, Google Cloud Platform, VS Code, Visual Studio
-        </p>
+        <TextButton type="button">
+          <span className="font-semibold">AI Based Builder:</span>
+        </TextButton> coming soon, Docker</p>
         <p>
-          <span className="font-semibold">Version Viewer:</span> coming soon, NumPy,
-          Matplotlib
-        </p>
+        <TextButton type="button">
+          <span className="font-semibold">Version Viewer:</span>
+        </TextButton> coming soon, NumPy, Matplotlib</p>
       </Section>
     </div>
   );

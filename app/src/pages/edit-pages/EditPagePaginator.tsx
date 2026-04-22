@@ -40,20 +40,13 @@ import { useLayoutEffect, useRef, useState, type ReactNode } from 'react';
  *     own overflowing page.
  *   - No block re-ordering, balancing, or justification.
  *
- * ## rjsf integration (future)
+ * ## Stateful editor blocks (future)
  *
- * In this sketch each block is rendered TWICE — once in the hidden
- * measurer and once in its assigned page. For static content that's
- * fine. For rjsf forms it's *mostly* fine (the measurer form is
- * invisible and untouched), EXCEPT when pagination recomputes and a
- * block's page assignment changes. React will unmount the form from
- * its old page parent and mount it in the new one — focus, caret
- * position, and any uncommitted local form state are lost.
- *
- * The durable fix is to render all blocks in a single STABLE React
- * parent and use `createPortal` to move their DOM into the assigned
- * page sheets. React lifecycles stay put; only DOM position moves.
- * Defer until forms actually ship.
+ * Each block is rendered twice (measurer + visible page). Static
+ * placeholders are fine. If a block holds form state and its page
+ * assignment changes, React will remount it and lose local state —
+ * the durable fix is a stable parent + `createPortal` into page sheets.
+ * Defer until needed.
  */
 
 /* ── A4 geometry @ 96dpi ─────────────────────────────────────────── */
@@ -64,8 +57,15 @@ export const A4_HEIGHT_PX = 1123;
 /** ~0.67" margin. Matches the WelcomePage for visual consistency. */
 export const PAGE_PADDING_PX = 64;
 
+/** Extra breathing room reserved at the bottom of every page. The
+ *  packer treats this as unusable, so blocks get bumped to the next
+ *  page before filling right down to the margin. Separate from
+ *  `PAGE_PADDING_PX` so the visual margin at top/left/right stays as
+ *  it was — only the content bin shrinks. */
+const BOTTOM_SAFETY_PX = 48;
+
 const USABLE_WIDTH = A4_WIDTH_PX - PAGE_PADDING_PX * 2;
-const USABLE_HEIGHT = A4_HEIGHT_PX - PAGE_PADDING_PX * 2;
+const USABLE_HEIGHT =A4_HEIGHT_PX - PAGE_PADDING_PX * 2;
 
 /* ── Hook ────────────────────────────────────────────────────────── */
 

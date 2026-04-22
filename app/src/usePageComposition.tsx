@@ -6,8 +6,8 @@ import AIBasedPruner from './pages/AIBasedPruner';
 import VersionViewer from './pages/VersionViewer';
 import { editPageBlocks } from './pages/edit-pages/EditPagesDocument';
 import { useEditPagePagination } from './pages/edit-pages/EditPagePaginator';
-import { previewPageBlocks } from './pages/preview/PreviewPagesDocument';
 import { usePreviewPagePagination } from './pages/preview/PreviewPagePaginator';
+import { usePreviewPdfPageBlocks } from './pages/preview/usePreviewPdfPageBlocks';
 
 /**
  * Shared page composition. Both DesktopApp and MobileApp call this —
@@ -18,7 +18,7 @@ import { usePreviewPagePagination } from './pages/preview/PreviewPagePaginator';
  *
  *   1. WelcomePage                  — hand-authored cover / intro
  *   2. edit pages                   — paginated, from `editPageBlocks`
- *   3. preview pages                — paginated, from `previewPageBlocks`
+ *   3. preview pages                — paginated PDF (one block per page, `usePreviewPdfPageBlocks`)
  *   4. AtsValidator                 — single static page
  *   5. RulesBasedPruner             — single static page
  *   6. AIBasedPruner                — single static page
@@ -40,6 +40,7 @@ export function usePageComposition(): {
 } {
   const { measurer: editMeasurer, pages: editPages } =
     useEditPagePagination(editPageBlocks);
+  const previewPageBlocks = usePreviewPdfPageBlocks();
   const { measurer: previewMeasurer, pages: previewPages } =
     usePreviewPagePagination(previewPageBlocks);
 

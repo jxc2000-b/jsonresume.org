@@ -25,7 +25,5 @@ body {
     Helvetica, Arial, sans-serif;
 }
 
-/* `.resume-form` is the style hook for schema-driven blocks (rjsf).
-   Intentionally empty for now — elements render with browser defaults
-   (plus Tailwind preflight). Add rules here when the visual design for
-   the form blocks lands. */
+/* `.resume-form` is the style hook for section editor blocks.
+   Intentionally empty for now — add rules when the real controls land. */

@@ -26,8 +26,16 @@ export const A4_HEIGHT_PX = 1123;
 /** ~0.67" margin. Matches the WelcomePage for visual consistency. */
 export const PAGE_PADDING_PX = 64;
 
-const USABLE_WIDTH = A4_WIDTH_PX - PAGE_PADDING_PX * 2;
-const USABLE_HEIGHT = A4_HEIGHT_PX - PAGE_PADDING_PX * 2;
+/** Extra breathing room reserved at the bottom of every page. The
+ *  packer treats this as unusable, so blocks get bumped to the next
+ *  page before filling right down to the margin. Separate from
+ *  `PAGE_PADDING_PX` so the visual margin at top/left/right stays as
+ *  it was — only the content bin shrinks. */
+const BOTTOM_SAFETY_PX = 48;
+
+export const USABLE_WIDTH = A4_WIDTH_PX - PAGE_PADDING_PX * 2;
+export const USABLE_HEIGHT =
+  A4_HEIGHT_PX - PAGE_PADDING_PX * 2 - BOTTOM_SAFETY_PX;
 
 /* ── Hook ────────────────────────────────────────────────────────── */
 
