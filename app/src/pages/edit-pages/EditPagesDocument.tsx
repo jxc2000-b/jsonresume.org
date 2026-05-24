@@ -2,6 +2,7 @@ import { useState, type ChangeEvent, type ReactNode } from 'react';
 import type { SectionId, UiSchema } from '../../types/uiSchema';
 import { getMasterSection } from '../../workspace/types';
 import { useWorkspace } from '../../workspace/WorkspaceContext';
+import { useResumePdf } from '../../pdf/ResumePdfContext';
 import { TextButton } from '@/components/TextButton';
 
 /**
@@ -36,7 +37,17 @@ const EDIT_PAGE_SECTIONS: { key: string; sectionId: SectionId; title: string }[]
 ];
 
 function EditDocumentHeader() {
-  const { commitStagedToMaster, hasStagedEdits } = useWorkspace();
+  const { commitStagedToMaster, hasStagedEdits, document } = useWorkspace();
+  const { status: pdfStatus, downloadPdf } = useResumePdf();
+  const name = (() => {
+    const basics = document?.master?.basics;
+    if (basics && typeof basics === 'object' && !Array.isArray(basics)) {
+      const n = (basics as Record<string, unknown>).name;
+      if (typeof n === 'string' && n.trim()) return n.trim();
+    }
+    return 'resume';
+  })();
+  const fileName = `${name.replace(/[^\w.-]+/g, '_')}.pdf`;
   return (
     <header
       className="mb-1 flex w-full min-w-0 items-center justify-between gap-3 text-left"
@@ -47,8 +58,15 @@ function EditDocumentHeader() {
         className="shrink-0 flex items-baseline justify-end gap-1 text-[10pt] text-inherit"
         style={{ fontFamily: DOC_FONT, color: 'black' }}
       >
-        <TextButton type="button" className="text-[10pt]">
-          <span className="underline decoration-black underline-offset-2">Preview</span>
+        <TextButton
+          type="button"
+          className="text-[10pt]"
+          disabled={pdfStatus !== 'ready'}
+          onClick={() => downloadPdf(fileName)}
+        >
+          <span className="underline decoration-black underline-offset-2">
+            {pdfStatus === 'generating' ? 'Building...' : 'Download'}
+          </span>
         </TextButton>
         <span aria-hidden> / </span>
         <TextButton
