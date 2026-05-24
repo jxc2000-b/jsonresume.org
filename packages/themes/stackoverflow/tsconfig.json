@@ -1,6 +1,0 @@
-{
-  "extends": "tsconfig/react-library",
-  "compilerOptions": {
-    "resolveJsonModule": true
-  }
-}
