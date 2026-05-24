@@ -8,12 +8,12 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./vitest.setup.ts'],
-    include: ['lib/**/*.test.{js,ts}', 'scripts/**/*.test.js'],
+    include: ['app/**/*.test.{js,ts,tsx}', 'lib/ats/**/*.test.js'],
     exclude: ['node_modules/**', 'packages/**'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
-      include: ['lib/**/*.{js,ts}'],
+      include: ['app/src/**/*.{js,ts,tsx}'],
       exclude: [
         'node_modules/**',
         'packages/**',
@@ -28,8 +28,8 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, '.'),
-      '~': path.resolve(__dirname, '.'),
+      '@': path.resolve(__dirname, 'app/src'),
+      '@lib': path.resolve(__dirname, 'lib'),
     },
   },
 });

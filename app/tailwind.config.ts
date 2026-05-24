@@ -34,3 +34,6 @@ export default {
   },
   plugins: [],
 } satisfies Config;
+
+
+//#282828 #3C3C3C #99BAFC

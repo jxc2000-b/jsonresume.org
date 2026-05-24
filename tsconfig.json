@@ -1,31 +1,29 @@
 {
-  "extends": "./packages/tsconfig/base.json",
   "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": true,
     "paths": {
-      "~/*": ["./*"],
-      "@/*": ["./*"]
+      "@/*": ["./app/src/*"]
     },
-    "strictNullChecks": true,
     "skipLibCheck": true,
     "allowJs": true,
     "noEmit": true,
     "declaration": false,
     "declarationMap": false,
     "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "moduleResolution": "node"
+    "esModuleInterop": true
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "**/*.js",
-    "**/*.jsx"
-  ],
+  "include": ["app/**/*.ts", "app/**/*.tsx"],
   "exclude": [
     "node_modules",
     "packages",
     "public",
     "coverage",
+    "app/dist",
     "vitest.config.ts",
     "vitest.setup.ts",
     "**/*.test.ts",

@@ -1,6 +1,6 @@
 import { TextButton } from '@/components/TextButton';
 import Hint from '../components/Hint';
-
+import { Section, EntryHeader, EntrySubheader, Bullets, LineBreak } from './pageHelpers';
 /**
  * Welcome page — rendered to look like a LaTeX-typeset resume for the
  * project itself ("Resume-Tree"). Follows the Jake's-Resume layout pattern
@@ -151,50 +151,3 @@ export default function WelcomePage() {
 
 /* ─────────────────────────── Primitives ─────────────────────────── */
 
-function Section({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section className="mt-4">
-      <h2 className="text-[13pt] font-bold uppercase tracking-wide">{title}</h2>
-      <hr className="mt-0.5 mb-1 border-t border-black" />
-      {children}
-    </section>
-  );
-}
-
-function EntryHeader({ left, right }: { left: string; right: string }) {
-  return (
-    <div className="flex items-baseline justify-between">
-      <span className="font-semibold">{left}</span>
-      <span>{right}</span>
-    </div>
-  );
-}
-
-function EntrySubheader({ left, right }: { left: string; right: string }) {
-  return (
-    <div className="flex items-baseline justify-between italic">
-      <span>{left}</span>
-      <span>{right}</span>
-    </div>
-  );
-}
-
-function Bullets({ items }: { items: string[] }) {
-  return (
-    <ul className="mt-1 list-disc space-y-0.5 pl-5">
-      {items.map((item, i) => (
-        <li key={i}>{item}</li>
-      ))}
-    </ul>
-  );
-}
-
-function LineBreak() {
-  return <div className="h-3" />;
-}

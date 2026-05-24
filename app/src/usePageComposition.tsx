@@ -1,13 +1,11 @@
 import type { ReactNode } from 'react';
 import WelcomePage from './pages/WelcomePage';
 import AtsValidator from './pages/AtsValidator';
-import RulesBasedPruner from './pages/RulesBasedPruner';
-import AIBasedPruner from './pages/AIBasedPruner';
-import VersionViewer from './pages/VersionViewer';
 import { editPageBlocks } from './pages/edit-pages/EditPagesDocument';
 import { useEditPagePagination } from './pages/edit-pages/EditPagePaginator';
 import { usePreviewPagePagination } from './pages/preview/PreviewPagePaginator';
 import { usePreviewPdfPageBlocks } from './pages/preview/usePreviewPdfPageBlocks';
+// Quarantined (not in viewer yet): ./pages/quarantined/toolPages.tsx
 
 /**
  * Shared page composition. Both DesktopApp and MobileApp call this —
@@ -20,9 +18,11 @@ import { usePreviewPdfPageBlocks } from './pages/preview/usePreviewPdfPageBlocks
  *   2. edit pages                   — paginated, from `editPageBlocks`
  *   3. preview pages                — paginated PDF (one block per page, `usePreviewPdfPageBlocks`)
  *   4. AtsValidator                 — single static page
- *   5. RulesBasedPruner             — single static page
- *   6. AIBasedPruner                — single static page
- *   7. VersionViewer                — single static page
+ *
+ * Quarantined (re-enable via `quarantinedToolPages` in toolPages.tsx):
+ *   - RulesBasedPruner
+ *   - AIBasedPruner
+ *   - VersionViewer
  *
  * The two paginators each return a hidden measurer node. Both must be
  * mounted somewhere stable in the tree; the caller is responsible for
@@ -49,9 +49,7 @@ export function usePageComposition(): {
     ...editPages,
     ...previewPages,
     <AtsValidator />,
-    <RulesBasedPruner />,
-    <AIBasedPruner />,
-    <VersionViewer />,
+    // ...quarantinedToolPages,
   ];
 
   const measurers: ReactNode = (

@@ -62,7 +62,6 @@ export const PAGE_PADDING_PX = 64;
  *  page before filling right down to the margin. Separate from
  *  `PAGE_PADDING_PX` so the visual margin at top/left/right stays as
  *  it was — only the content bin shrinks. */
-const BOTTOM_SAFETY_PX = 48;
 
 const USABLE_WIDTH = A4_WIDTH_PX - PAGE_PADDING_PX * 2;
 const USABLE_HEIGHT =A4_HEIGHT_PX - PAGE_PADDING_PX * 2;
@@ -76,7 +75,7 @@ export function useEditPagePagination(blocks: ReactNode[]): {
   const measurerRef = useRef<HTMLDivElement>(null);
   const [assignments, setAssignments] = useState<number[]>(() =>
     blocks.map(() => 0),
-  );
+  ); // Initialize assignments array with 0 for each block
 
   // Runs after every render. Converges when measurement stabilises
   // (arraysEqual short-circuits further setStates). Intentionally has
@@ -95,12 +94,12 @@ export function useEditPagePagination(blocks: ReactNode[]): {
     for (let i = 0; i < blocks.length; i++) {
       const h = domBlocks[i]?.getBoundingClientRect().height ?? 0;
 
-      if (used > 0 && used + h > USABLE_HEIGHT) {
+      if (used > 0 && used + h > USABLE_HEIGHT) { //compare the height of the block with the usable height
         page += 1;
         used = 0;
       }
 
-      next.push(page);
+      next.push(page); 
       used += h;
     }
 
