@@ -29,9 +29,6 @@ importers:
         specifier: 19.2.0
         version: 19.2.0(react@19.2.0)
     devDependencies:
-      '@repo/eslint-config-custom':
-        specifier: workspace:*
-        version: link:packages/eslint-config-custom
       '@testing-library/jest-dom':
         specifier: ^6.9.1
         version: 6.9.1
@@ -77,9 +74,6 @@ importers:
       tailwindcss:
         specifier: ^3.4.17
         version: 3.4.19
-      tsconfig:
-        specifier: workspace:*
-        version: link:packages/tsconfig
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
